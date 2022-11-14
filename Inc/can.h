@@ -46,9 +46,11 @@ extern CAN_HandleTypeDef hcan1;
  * @param 2 : Can mode is set to LOW SPEED
  *
  **/
-#define CAN_MODE 1
+#define CAN_SPEED_MODE 1
 #define CAN_HIGH_SPEED_MODE 1
 #define CAN_LOW_SPEED_MODE 2
+
+#define CAN_MODE CAN_MODE_LOOPBACK
 
 #define CAN_HIGH_SPEED_PRESCALER 8
 #define CAN_LOW_SPEED_PRESCALER 16

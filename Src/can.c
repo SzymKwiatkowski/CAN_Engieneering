@@ -41,17 +41,18 @@ void MX_CAN1_Init()
   if (CAN_MODE == CAN_HIGH_SPEED_MODE) 
   {
     hcan1.Init.Prescaler = CAN_HIGH_SPEED_PRESCALER;
-  } else if(CAN_MODE == CAN_LOW_SPEED_MODE)
+  } else if(CAN_SPEED_MODE == CAN_LOW_SPEED_MODE)
   {
     hcan1.Init.Prescaler = CAN_LOW_SPEED_PRESCALER;
   } else 
   {
     Error_Handler();
   }
+  hcan1.Init.Mode = CAN_MODE;
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
   // hcan1.Init.Prescaler = 16;
-  hcan1.Init.Mode = CAN_MODE_LOOPBACK;
+  // hcan1.Init.Mode = CAN_MODE_LOOPBACK;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
