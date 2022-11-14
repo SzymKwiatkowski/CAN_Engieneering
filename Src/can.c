@@ -24,12 +24,13 @@
 CanDataFrameInit can_frame_template;
 CAN_FilterTypeDef can_filter_template;
 
+uint32_t can_tx_mailbox;
 /* USER CODE END 0 */
 
 CAN_HandleTypeDef hcan1;
 
 /* CAN1 init function */
-void MX_CAN1_Init(void)
+void MX_CAN1_Init()
 {
 
   /* USER CODE BEGIN CAN1_Init 0 */
@@ -37,10 +38,19 @@ void MX_CAN1_Init(void)
   /* USER CODE END CAN1_Init 0 */
 
   /* USER CODE BEGIN CAN1_Init 1 */
-
+  if (CAN_MODE == CAN_HIGH_SPEED_MODE) 
+  {
+    hcan1.Init.Prescaler = CAN_HIGH_SPEED_PRESCALER;
+  } else if(CAN_MODE == CAN_LOW_SPEED_MODE)
+  {
+    hcan1.Init.Prescaler = CAN_LOW_SPEED_PRESCALER;
+  } else 
+  {
+    Error_Handler();
+  }
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = CAN_SPEED_PRESCALER;
+  // hcan1.Init.Prescaler = 16;
   hcan1.Init.Mode = CAN_MODE_LOOPBACK;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
@@ -117,30 +127,24 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 /* USER CODE BEGIN 1 */
 /**
  * @brief: Initialize CAN network
- * @param chosen_network
  *
  **/
-void CanInit(CAN_HandleTypeDef chosen_network) {
-	if (HAL_CAN_Start(&chosen_network) != HAL_OK) {
+void CanInit() {
+	if (HAL_CAN_Start(&hcan1) != HAL_OK) {
 		Error_Handler();
 	}
 
-	if (HAL_CAN_ActivateNotification(&chosen_network,
+	if (HAL_CAN_ActivateNotification(&hcan1,
 	CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
 		Error_Handler();
 	}
 }
 /**
  * @brief: configure can data frames hardware filter
- * @param chosen_network
- * @param can_filter_bank: Specific filter bank from 0-14
- * @param can_filter_id_high: High byte of CAN ID to be received
- * @param can_filter_id_low: Low byte of CAN ID to be received
- * @param can_filter_mask_id_high: High byte of CAN ID mask - IDs to be received
- * @param can_filter_mask_id_low: Low byte of CAN ID mask - IDs to be received
+ * @param can_filter_bank: Specific filter bank from 0-13
  *
  **/
-void CanConfigFilter(CAN_HandleTypeDef chosen_network, uint8_t can_filter_bank){
+void CanConfigFilter(uint8_t can_filter_bank){
 	can_filter_template.FilterBank = can_filter_bank;
 	can_filter_template.FilterMode = CAN_FILTERMODE_IDMASK;
 	can_filter_template.FilterScale = CAN_FILTERSCALE_32BIT;
@@ -152,11 +156,119 @@ void CanConfigFilter(CAN_HandleTypeDef chosen_network, uint8_t can_filter_bank){
 	can_filter_template.FilterActivation = ENABLE;
 	can_filter_template.SlaveStartFilterBank = 14;
 
-	if (HAL_CAN_ConfigFilter(&chosen_network, &can_filter_template) != HAL_OK) {
+	if (HAL_CAN_ConfigFilter(&hcan1, &can_filter_template) != HAL_OK) {
 		Error_Handler();
 	}
 
 }
+/**
+ * @brief: clearing frame of TX data
+ *
+ **/
+void CanClearTxDataFrame() {
+	can_frame_template.tx_header.StdId = 0x00;
+	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template.tx_header.IDE = CAN_ID_STD;
+	can_frame_template.tx_header.DLC = 0;
+	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+	can_frame_template.tx_data[0] = 0x0;
+	can_frame_template.tx_data[1] = 0x0;
+	can_frame_template.tx_data[2] = 0x0;
+	can_frame_template.tx_data[3] = 0x0;
+	can_frame_template.tx_data[4] = 0x0;
+	can_frame_template.tx_data[5] = 0x0;
+	can_frame_template.tx_data[6] = 0x0;
+	can_frame_template.tx_data[7] = 0x0;
+}
 
+
+void CanClearRxDataFrame() {
+	can_frame_template.rx_header.StdId = 0x00;
+	can_frame_template.rx_header.ExtId = 0x00;
+	can_frame_template.rx_header.RTR = CAN_RTR_DATA;
+	can_frame_template.rx_header.IDE = CAN_ID_STD;
+	can_frame_template.rx_header.DLC = 0;
+	can_frame_template.rx_data[0] = 0x0;
+	can_frame_template.rx_data[1] = 0x0;
+	can_frame_template.rx_data[2] = 0x0;
+	can_frame_template.rx_data[3] = 0x0;
+	can_frame_template.rx_data[4] = 0x0;
+	can_frame_template.rx_data[5] = 0x0;
+	can_frame_template.rx_data[6] = 0x0;
+	can_frame_template.rx_data[7] = 0x0;
+}
+
+int CanSendExtendedIdMessage(uint32_t FrameId, uint8_t DLC,
+		uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
+		uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7){
+  can_frame_template.tx_header.ExtId = FrameId;
+	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template.tx_header.IDE = CAN_ID_EXT;
+	can_frame_template.tx_header.DLC = DLC;
+	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+	can_frame_template.tx_data[0] = byte0;
+	can_frame_template.tx_data[1] = byte1;
+	can_frame_template.tx_data[2] = byte2;
+	can_frame_template.tx_data[3] = byte3;
+	can_frame_template.tx_data[4] = byte4;
+	can_frame_template.tx_data[5] = byte5;
+	can_frame_template.tx_data[6] = byte6;
+	can_frame_template.tx_data[7] = byte7;
+  if (HAL_CAN_AddTxMessage(&hcan1,
+	          &can_frame_template.tx_header, can_frame_template.tx_data,
+	          &can_tx_mailbox) != HAL_OK) {
+	  Error_Handler();
+    CanClearTxDataFrame();
+    return RESULT_FAILED;
+	}
+
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
+	}
+  CanClearTxDataFrame();
+  return RESULT_SUCCESS;
+}
+
+int CanSendStandardIdMessage(uint32_t FrameId, uint8_t DLC,
+		uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
+		uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7){
+  can_frame_template.tx_header.ExtId = FrameId;
+	can_frame_template.tx_header.RTR = CAN_RTR_DATA;
+	can_frame_template.tx_header.IDE = CAN_ID_STD;
+	can_frame_template.tx_header.DLC = DLC;
+	can_frame_template.tx_header.TransmitGlobalTime = DISABLE;
+	can_frame_template.tx_data[0] = byte0;
+	can_frame_template.tx_data[1] = byte1;
+	can_frame_template.tx_data[2] = byte2;
+	can_frame_template.tx_data[3] = byte3;
+	can_frame_template.tx_data[4] = byte4;
+	can_frame_template.tx_data[5] = byte5;
+	can_frame_template.tx_data[6] = byte6;
+	can_frame_template.tx_data[7] = byte7;
+  if (HAL_CAN_AddTxMessage(&hcan1,
+	          &can_frame_template.tx_header, can_frame_template.tx_data,
+	          &can_tx_mailbox) != HAL_OK) {
+	  Error_Handler();
+    CanClearTxDataFrame();
+    return RESULT_FAILED;
+	}
+
+	while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {}
+  CanClearTxDataFrame();
+  return RESULT_SUCCESS;
+}
+/**
+ * @brief: store received data from chosen network
+ *
+ **/
+int CanReceiveData(CanDataFrameInit* dataFrame) {
+	if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &dataFrame->rx_header,
+			dataFrame->rx_data) != HAL_OK) {
+		/* Reception Error */
+		Error_Handler();
+    CanClearRxDataFrame();
+    return RESULT_FAILED;
+	}
+  return RESULT_SUCCESS;
+}
 
 /* USER CODE END 1 */

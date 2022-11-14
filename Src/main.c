@@ -34,6 +34,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+// Specify operating modes
+#define TRANSMITTER 1
+#define RECEIVER 2
+
+// Define if using Extended CAN frames
+#define EXTENDED_FRAMES 1
+
+#define SPECIFIED_EXTENDED_ID 0x18065
+#define SPECIFIED_STANDARD_ID 0x333
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,7 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+CanDataFrameInit dataFrame;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,9 +96,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_CAN1_Init();
+  MX_CAN1_Init(CAN_LOW_SPEED_PRESCALER);
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  GPIO_Init();
+  CanConfigFilter(1);
+  CanInit();
 
   /* USER CODE END 2 */
 
@@ -97,6 +109,55 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+    HAL_Delay(500);
+    #ifdef TRANSMITTER
+      #ifdef EXTENDED_FRAMES
+      int transmit_result = CanSendExtendedIdMessage(0x18065, 8, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88);
+      if (transmit_result != RESULT_SUCCESS)
+      {
+        Error_Handler();
+      } else
+      {
+
+      }
+      #endif
+
+      #ifndef EXTENDED_FRAMES
+      int transmit_result = CanSendStandardIdMessage(0x333, 8, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88);
+      if (transmit_result != RESULT_SUCCESS)
+      {
+        Error_Handler();
+      } else
+      {
+        
+      }
+      #endif
+    #endif
+
+    #ifdef RECEIVER
+      int receive_result = CanReceiveData(&dataFrame);
+      #ifdef EXTENDED_FRAMES
+      if (receive_result != RESULT_SUCCESS)
+      {
+        Error_Handler();
+      } else
+      {
+        
+      }
+      #endif
+
+      #ifndef EXTENDED_FRAMES
+      int receive_result = CanReceiveData(&dataFrame);
+      if (receive_result != RESULT_SUCCESS)
+      {
+        Error_Handler();
+      } else
+      {
+        
+      }
+      #endif
+    #endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

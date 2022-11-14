@@ -7,6 +7,7 @@ CAN1.CalculateTimeQuantum=500.0
 CAN1.IPParameters=CalculateTimeQuantum,CalculateTimeBit,CalculateBaudRate,BS1,BS2,Mode
 CAN1.Mode=CAN_MODE_LOOPBACK
 File.Version=6
+GPIO.groupedBy=Group By Peripherals
 KeepUserPlacement=false
 Mcu.CPN=STM32L432KCU3
 Mcu.Family=STM32L4
