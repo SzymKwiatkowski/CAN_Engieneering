@@ -35,7 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // Specify operating modes
-#define TRANSMITTER 1
+// #define TRANSMITTER 1
 #define RECEIVER 2
 
 // Define if using Extended CAN frames
@@ -96,7 +96,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_CAN1_Init(CAN_LOW_SPEED_PRESCALER);
+  MX_CAN1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   GPIO_Init();

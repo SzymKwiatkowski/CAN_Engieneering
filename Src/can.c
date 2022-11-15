@@ -38,7 +38,7 @@ void MX_CAN1_Init()
   /* USER CODE END CAN1_Init 0 */
 
   /* USER CODE BEGIN CAN1_Init 1 */
-  if (CAN_MODE == CAN_HIGH_SPEED_MODE) 
+  if (CAN_SPEED_MODE == CAN_HIGH_SPEED_MODE) 
   {
     hcan1.Init.Prescaler = CAN_HIGH_SPEED_PRESCALER;
   } else if(CAN_SPEED_MODE == CAN_LOW_SPEED_MODE)

@@ -66,16 +66,25 @@ void GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
+  /* USER CODE BEGIN Private defines */
+/**
+ * @brief: CAN Signaling diodes setup
+ *
+ **/
   HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(TRANSMIT_LED_GPIO_Port, TRANSMIT_LED_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(ALIVE_LED_GPIO_Port, ALIVE_LED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(DATACOR_LED_GPIO_Port, DATACOR_LED_Pin, GPIO_PIN_SET);
 
-  GPIO_InitStruct.Pin = ERR_LED_Pin | TRANSMIT_LED_Pin | RECEIVE_LED_Pin | ALIVE_LED_Pin;
+  GPIO_InitStruct.Pin = ERR_LED_Pin | TRANSMIT_LED_Pin | RECEIVE_LED_Pin | DATACOR_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* TODO
+  * ADD ONE PIN FOR SEND OR RECEIVE INSTRUCTION
+  */
 
 }
 /* USER CODE END 2 */

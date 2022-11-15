@@ -79,8 +79,8 @@ void Error_Handler(void);
 #define TRANSMIT_LED_Pin GPIO_PIN_5
 #define TRANSMIT_LED_GPIO_Port GPIOA
 
-#define ALIVE_LED_Pin GPIO_PIN_6
-#define ALIVE_LED_GPIO_Port GPIOA
+#define DATACOR_LED_Pin GPIO_PIN_6
+#define DATACOR_LED_GPIO_Port GPIOA
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
