@@ -15,7 +15,7 @@ Repository contains code for simple can networks that can have characteristics s
   - Extended(29 bit ID)
 
 Can receiver and transmitter have 4 LEDs which are responsible for:
-- Signaling error(ERR LED)
-- Signaling transmit status(if transmit was successfull, TRANSMIT LED)
-- Signaling receive status(if receive was successfull, RECEIVE LED)
-- Signaling correct data(DATA LED)
+- Signaling error(ERR LED) PA3 -> A2
+- Signaling transmit status(if transmit was successfull, TRANSMIT LED) PA4 -> A3
+- Signaling receive status(if receive was successfull, RECEIVE LED) PA5 -> A4
+- Signaling correct data(DATA LED) PA6 -> A5

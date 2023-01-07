@@ -1,43 +1,44 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    can.h
-  * @brief   This file contains all the function prototypes for
-  *          the can.c file
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    can.h
+ * @brief   This file contains all the function prototypes for
+ *          the can.c file
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2022 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __CAN_H__
 #define __CAN_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* USER CODE BEGIN Includes */
-/**
- * CAN PINS ARE MAPPED AS FOLLOWS:
- * PA11 - RX PIN[D10]
- * PA12 - TX PIN[D2]
- *
- **/
-/* USER CODE END Includes */
+  /* USER CODE BEGIN Includes */
+  /**
+   * CAN PINS ARE MAPPED AS FOLLOWS:
+   * PA11 - RX PIN[D10]
+   * PA12 - TX PIN[D2]
+   *
+   **/
+  /* USER CODE END Includes */
 
-extern CAN_HandleTypeDef hcan1;
+  extern CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN Private defines */
 /**
@@ -46,7 +47,7 @@ extern CAN_HandleTypeDef hcan1;
  * @param 2 : Can mode is set to LOW SPEED
  *
  **/
-#define CAN_SPEED_MODE 1
+#define CAN_SPEED_MODE 2
 #define CAN_HIGH_SPEED_MODE 1
 #define CAN_LOW_SPEED_MODE 2
 
@@ -57,35 +58,36 @@ extern CAN_HandleTypeDef hcan1;
 
 #define RESULT_FAILED 0
 #define RESULT_SUCCESS 1
-/* USER CODE END Private defines */
+  /* USER CODE END Private defines */
 
-void MX_CAN1_Init();
+  void MX_CAN1_Init();
 
-/* USER CODE BEGIN Prototypes */
-typedef struct CanDataFrameInit{
-	uint8_t tx_data[8];
-	CAN_TxHeaderTypeDef tx_header;
-	CAN_RxHeaderTypeDef rx_header;
-	uint8_t rx_data[8];
-} CanDataFrameInit;
+  /* USER CODE BEGIN Prototypes */
+  typedef struct CanDataFrameInit
+  {
+    uint8_t tx_data[8];
+    CAN_TxHeaderTypeDef tx_header;
+    CAN_RxHeaderTypeDef rx_header;
+    uint8_t rx_data[8];
+  } CanDataFrameInit;
 
-void CanInit();
-void CanConfigFilter(uint8_t can_filter_bank);
+  void CanInit();
+  void CanConfigFilter(uint8_t can_filter_bank);
 
-int CanSendExtendedIdMessage(uint32_t FrameId, uint8_t DLC,
-		uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
-		uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7);
+  int CanSendExtendedIdMessage(uint32_t FrameId, uint8_t DLC,
+                               uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
+                               uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7);
 
-int CanSendStandardIdMessage(uint32_t FrameId, uint8_t DLC,
-		uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
-		uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7);
+  int CanSendStandardIdMessage(uint32_t FrameId, uint8_t DLC,
+                               uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3,
+                               uint8_t byte4, uint8_t byte5, uint8_t byte6, uint8_t byte7);
 
-int CanReceiveData(CanDataFrameInit*);
-/* USER CODE END Prototypes */
+  int CanReceiveData(CanDataFrameInit *);
+  void CanClearRxDataFrame(CanDataFrameInit *);
+  /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __CAN_H__ */
-
