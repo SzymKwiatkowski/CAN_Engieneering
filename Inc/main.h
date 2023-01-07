@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "can.h"
 
 /* USER CODE END Includes */
 
@@ -53,7 +54,8 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void OnSuccessfulTransmit();
+void OnFailedTransmit();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

@@ -35,17 +35,11 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // Specify operating modes
-#define TRANSMITTER 1
+// #define TRANSMITTER 1
 #define RECEIVER 2
 
 // Define if using Extended CAN frames
-// #define EXTENDED_FRAMES 1
-
-/* Specified id for extended frame type */
-#define SPECIFIED_EXTENDED_ID 0x18065
-
-/* Specified id for standard frame type */
-#define SPECIFIED_STANDARD_ID 0x300
+#define EXTENDED_FRAMES 1
 
 /* Half of time in which frames are transmited */
 #define TRANSMIT_INTERVAL 1000
@@ -234,41 +228,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void ValidateExtendedFrame(CanDataFrameInit *frame)
-{
-    if (frame->rx_header.ExtId == SPECIFIED_STANDARD_ID) 
-    {
-        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, SET);
-        HAL_Delay(1000);
-        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, RESET);
-    }
-    else
-    {
-        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
-        HAL_Delay(1000);
-        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
-    }
-
-    CanClearRxDataFrame(frame);
-}
-
-void ValidateStandardFrame(CanDataFrameInit *frame)
-{
-    if (frame->rx_header.StdId == SPECIFIED_STANDARD_ID) 
-    {
-        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, SET);
-        HAL_Delay(1000);
-        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, RESET);
-    }
-    else
-    {
-        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
-        HAL_Delay(1000);
-        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
-    }
-    CanClearRxDataFrame(frame);
-}
-
 void OnSuccessfulTransmit()
 {
     HAL_GPIO_WritePin(TRANSMIT_LED_GPIO_Port, TRANSMIT_LED_Pin, SET);

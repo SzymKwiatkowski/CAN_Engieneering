@@ -34,22 +34,20 @@ extern "C"
    * CAN PINS ARE MAPPED AS FOLLOWS:
    * PA11 - RX PIN[D10]
    * PA12 - TX PIN[D2]
-   *
    **/
   /* USER CODE END Includes */
 
   extern CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN Private defines */
-/**
- * @brief: CAN MODE TYPE
- * @param 1 : Can mode is set to HIGH SPEED
- * @param 2 : Can mode is set to LOW SPEED
- *
- **/
-#define CAN_SPEED_MODE 2
 #define CAN_HIGH_SPEED_MODE 1
 #define CAN_LOW_SPEED_MODE 2
+/**
+ * @brief: CAN_SPEED_MODE
+ * @param 1 : Can mode is set to HIGH SPEED
+ * @param 2 : Can mode is set to LOW SPEED
+ **/
+#define CAN_SPEED_MODE CAN_HIGH_SPEED_MODE
 
 #define CAN_MODE CAN_MODE_NORMAL
 
@@ -58,6 +56,13 @@ extern "C"
 
 #define RESULT_FAILED 0
 #define RESULT_SUCCESS 1
+
+/* Specified id for extended frame type */
+#define SPECIFIED_EXTENDED_ID 0x18065
+
+/* Specified id for standard frame type */
+#define SPECIFIED_STANDARD_ID 0x300
+
   /* USER CODE END Private defines */
 
   void MX_CAN1_Init();
@@ -84,6 +89,8 @@ extern "C"
 
   int CanReceiveData(CanDataFrameInit *);
   void CanClearRxDataFrame(CanDataFrameInit *);
+  void ValidateStandardFrame(CanDataFrameInit *frame);
+  void ValidateExtendedFrame(CanDataFrameInit *frame);
   /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

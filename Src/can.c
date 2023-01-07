@@ -300,4 +300,39 @@ int CanReceiveData(CanDataFrameInit *dataFrame)
     return RESULT_SUCCESS;
 }
 
+void ValidateExtendedFrame(CanDataFrameInit *frame)
+{
+    if (frame->rx_header.ExtId == SPECIFIED_EXTENDED_ID) 
+    {
+        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, SET);
+        HAL_Delay(1000);
+        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, RESET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
+        HAL_Delay(1000);
+        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
+    }
+
+    CanClearRxDataFrame(frame);
+}
+
+void ValidateStandardFrame(CanDataFrameInit *frame)
+{
+    if (frame->rx_header.StdId == SPECIFIED_STANDARD_ID) 
+    {
+        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, SET);
+        HAL_Delay(1000);
+        HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, RESET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
+        HAL_Delay(1000);
+        HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
+    }
+    CanClearRxDataFrame(frame);
+}
+
 /* USER CODE END 1 */
