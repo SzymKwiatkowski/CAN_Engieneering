@@ -42,7 +42,8 @@
 #define EXTENDED_FRAMES 1
 
 /* Half of time in which frames are transmited */
-#define TRANSMIT_INTERVAL 1000
+#define HALF_OF_TRANSMIT_INTERVAL 1000
+#define RECEIVE_INTERVAL 1200
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -110,13 +111,12 @@ int main(void)
     while (1)
     {
         HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-        HAL_Delay(TRANSMIT_INTERVAL);
 #ifdef TRANSMITTER
 #ifdef EXTENDED_FRAMES
         int transmit_result = CanSendExtendedIdMessage(SPECIFIED_EXTENDED_ID, 8, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88);
         if (transmit_result != RESULT_SUCCESS)
         {
-            // Error_Handler();
+            OnFailedTransmit();
         }
         else
         {
@@ -128,7 +128,7 @@ int main(void)
         int transmit_result = CanSendStandardIdMessage(SPECIFIED_STANDARD_ID, 8, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88);
         if (transmit_result != RESULT_SUCCESS)
         {
-            // Error_Handler();
+            OnFailedTransmit();
         }
         else
         {
@@ -142,10 +142,12 @@ int main(void)
         int receive_result = CanReceiveData(&dataFrame);
         if (receive_result != RESULT_SUCCESS)
         {
+            OnFailedReceive();
         }
         else
         {
             ValidateExtendedFrame(&dataFrame);
+            HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
         }
 #endif
 
@@ -153,11 +155,12 @@ int main(void)
         int receive_result = CanReceiveData(&dataFrame);
         if (receive_result != RESULT_SUCCESS)
         {
-            // Error_Handler();
+            OnFailedReceive();
         }
         else
         {
             ValidateStandardFrame(&dataFrame);
+            HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
         }
 #endif
 #endif
@@ -231,17 +234,25 @@ void SystemClock_Config(void)
 void OnSuccessfulTransmit()
 {
     HAL_GPIO_WritePin(TRANSMIT_LED_GPIO_Port, TRANSMIT_LED_Pin, SET);
-    HAL_Delay(TRANSMIT_INTERVAL);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
     HAL_GPIO_WritePin(TRANSMIT_LED_GPIO_Port, TRANSMIT_LED_Pin, RESET);
-    HAL_Delay(TRANSMIT_INTERVAL);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
 }
 
 void OnFailedTransmit()
 {
     HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
-    HAL_Delay(TRANSMIT_INTERVAL);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
     HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
-    HAL_Delay(TRANSMIT_INTERVAL);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
+}
+
+void OnFailedReceive()
+{
+    HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
+    HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
+    HAL_Delay(HALF_OF_TRANSMIT_INTERVAL);
 }
 /* USER CODE END 4 */
 

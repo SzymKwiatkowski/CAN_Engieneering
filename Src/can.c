@@ -286,17 +286,9 @@ int CanReceiveData(CanDataFrameInit *dataFrame)
     if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &dataFrame->rx_header,
                              dataFrame->rx_data) != HAL_OK)
     {
-        /* Reception Error */
-        // Error_Handler();
-        /* Light RED LED to signal wrong communication */
-        // HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, SET);
-        // HAL_Delay(1000);
-        // HAL_GPIO_WritePin(ERR_LED_GPIO_Port, ERR_LED_Pin, RESET);
         return RESULT_FAILED;
     }
-    // HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, SET);
-    // HAL_Delay(1000);
-    // HAL_GPIO_WritePin(RECEIVE_LED_GPIO_Port, RECEIVE_LED_Pin, RESET);
+
     return RESULT_SUCCESS;
 }
 
