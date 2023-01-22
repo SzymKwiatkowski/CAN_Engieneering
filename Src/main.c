@@ -35,7 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // Specify operating modes
-// #define TRANSMITTER 1
+#define TRANSMITER 1
 #define RECEIVER 2
 
 // Define if using Extended CAN frames
@@ -43,7 +43,7 @@
 
 /* Half of time in which frames are transmited */
 #define HALF_OF_TRANSMIT_INTERVAL 1000
-#define RECEIVE_INTERVAL 1200
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -111,7 +111,7 @@ int main(void)
     while (1)
     {
         HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-#ifdef TRANSMITTER
+#ifdef TRANSMITER
 #ifdef EXTENDED_FRAMES
         int transmit_result = CanSendExtendedIdMessage(SPECIFIED_EXTENDED_ID, 8, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88);
         if (transmit_result != RESULT_SUCCESS)
